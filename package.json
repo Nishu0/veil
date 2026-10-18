@@ -1,0 +1,16 @@
+{
+  "name": "veil",
+  "private": true,
+  "description": "VEIL: private, compliant, agent-run RWA prime account on Injective",
+  "scripts": {
+    "setup": "npm --prefix circuits install && npm --prefix agent install && npm --prefix web install && node circuits/scripts/env.mjs",
+    "circuit": "bash circuits/build.sh && node circuits/scripts/fixture.mjs",
+    "test": "cd contracts && forge test",
+    "dev": "bash scripts/dev.sh",
+    "deploy:local": "bash scripts/deploy.sh local",
+    "deploy:testnet": "bash scripts/deploy.sh testnet",
+    "agent": "npm --prefix agent start",
+    "web": "npm --prefix web run dev",
+    "e2e": "node circuits/scripts/e2e.mjs"
+  }
+}

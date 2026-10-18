@@ -1,0 +1,13 @@
+.env
+node_modules/
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+circuits/build/
+circuits/build.log
+.next/
+*.tsbuildinfo
+agent/data/
+*.log
+.DS_Store
+.logs/
