@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, Bot, Check, EyeOff, FlaskConical, Landmark, ShieldCheck, X } from "lucide-react";
+import { ArrowRight, Bot, Check, EyeOff, FlaskConical, Landmark, ShieldCheck } from "lucide-react";
 import { VeilMark } from "@/components/veil/ui";
-import { GapChart, IsoScene } from "@/components/veil/iso-scene";
+import { IsoScene } from "@/components/veil/iso-scene";
+import { GapGuardPanel, MandatePanel } from "@/components/veil/risk-panels";
 
 const Rule = () => <div className="lp-rule" aria-hidden />;
 
@@ -97,31 +98,8 @@ export default function Landing() {
             <p>The weekend gap is priced in before the close, and the agent that does it can only act inside a mandate the exchange enforces.</p>
           </div>
           <div className="lp-two">
-            <div className="lp-panel">
-              <div className="lp-panel-head"><span className="lp-chip"><FlaskConical />Weekend gap guard</span></div>
-              <div className="lp-panel-body">
-                <h3>De-levered before the oracle sleeps</h3>
-                <p>iAsset marks freeze from Friday close to Monday open. The agent cuts leverage to what a 4-sigma gap cannot liquidate, then restores it on Monday.</p>
-                <GapChart />
-              </div>
-            </div>
-            <div className="lp-panel">
-              <div className="lp-panel-head"><span className="lp-chip"><Bot />Agent mandate</span><span className="lp-code">approve(agent, msgTypes, limit, 7d)</span></div>
-              <div className="lp-panel-body">
-                <h3>Authority with edges</h3>
-                <p>The vault grants the agent a scoped, expiring, spend-capped authorization. Anything outside it reverts on the exchange, and every decision is hashed on-chain.</p>
-                <div className="lp-real" style={{ gridTemplateColumns: "1fr" }}>
-                  <ul>
-                    <li><Check color="#23804f" />Place and reduce derivative orders</li>
-                    <li><Check color="#23804f" />Add margin to the position</li>
-                    <li><Check color="#23804f" />Up to 2,500 USDT of committed margin, for 7 days</li>
-                    <li><X color="#ab4634" />Withdraw from the vault subaccount</li>
-                    <li><X color="#ab4634" />Transfer funds anywhere else</li>
-                    <li><X color="#ab4634" />Act after the mandate expires or is revoked</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+            <GapGuardPanel />
+            <MandatePanel />
           </div>
         </section>
       </div>

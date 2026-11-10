@@ -265,3 +265,27 @@ select.v-input { appearance: none; background-image: url("data:image/svg+xml,%3C
 .dk-canvas h1, .dk-canvas h2, .dk-canvas h3, .dk-canvas p, .dk-canvas ul { margin: 0; }
 .dk-canvas ul { padding-left: 1.15em; list-style: disc; display: grid; gap: .35em; }
 .dk-canvas b { font-weight: 650; }
+
+/* ------------------------------------------------- animated risk panels (rk) */
+.rk { display: flex; flex-direction: column; }
+.rk-head { justify-content: center; min-height: 58px; font-size: 14px; }
+.rk-chip { transition: border-color .3s, background .3s, color .3s; }
+.rk-chip.is-ok { border-color: var(--v-mint-line); background: var(--v-mint); color: #1f6a43; }
+.rk-chip.is-bad { border-color: var(--v-red-line); background: var(--v-red-bg); color: var(--v-red); } .rk-chip.is-bad svg { color: var(--v-red); }
+.rk-chip.is-warn { border-color: var(--v-amber-line); background: var(--v-amber-bg); color: var(--v-amber); } .rk-chip.is-warn svg { color: var(--v-amber); }
+.rk-swap { display: inline-block; animation: rk-swap .35s ease both; }
+@keyframes rk-swap { from { opacity: 0; transform: translateY(5px); } }
+.rk-progress { height: 2px; margin-top: -1px; background: transparent; }
+.rk-progress i { display: block; height: 100%; width: 100%; transform-origin: 0 50%; background: var(--v-bright); animation: rk-progress linear both; }
+@keyframes rk-progress { from { transform: scaleX(0); } }
+.rk-scene { display: block; width: 100%; height: auto; background: radial-gradient(ellipse at 50% 45%, #fff 0%, #f9fbfa 75%); }
+.rk-scene g { transform-box: fill-box; }
+.rk-pop { animation: rk-pop .4s cubic-bezier(.2, 1.4, .4, 1) both; transform-origin: center; }
+@keyframes rk-pop { from { opacity: 0; transform: scale(.8); } }
+.rk-foot { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 16px 20px 18px; border-top: 1px solid var(--v-line-2); }
+.rk-caption { min-height: 66px; color: var(--v-mute); font-size: 14px; line-height: 1.5; }
+.rk-caption b { color: var(--v-ink); font-weight: 600; }
+.rk-dots { display: flex; gap: 6px; padding-top: 7px; }
+.rk-dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: #d5ddd8; cursor: pointer; transition: background .2s, width .2s; }
+.rk-dots button.is-on { width: 18px; border-radius: 4px; background: var(--v-accent); }
+.rk-dots button:focus-visible { outline: 2px solid var(--v-bright); outline-offset: 2px; }
