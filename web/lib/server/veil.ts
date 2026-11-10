@@ -30,7 +30,8 @@ export function serverConfig() {
     rpcUrl,
     networkName: testnet ? "Injective EVM Testnet" : "Local devnet (anvil)",
     explorerUrl: testnet ? "https://testnet.blockscout.injective.network" : null,
-    agentUrl: `http://localhost:${env.AGENT_PORT || 8787}`,
+    // In production the agent sits behind the reverse proxy (AGENT_PUBLIC_URL=/agent).
+    agentUrl: env.AGENT_PUBLIC_URL || `http://localhost:${env.AGENT_PORT || 8787}`,
     deployment: deployment as Record<string, string>,
     abis: shared.abis as Record<string, Abi>,
   };
