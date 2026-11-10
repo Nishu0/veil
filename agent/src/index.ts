@@ -182,6 +182,10 @@ async function tick(): Promise<Decision | null> {
   }
 
   const advice = await advise({ session: SESSIONS[s.session], proposedAction: p.action, currentLeverage: r2(s.leverage), ...inputs, policy }, { min: 1, max: p.maxLev }, { target: p.maxLev, why: p.why });
+  // The model can take a while; trade on the book as it is now, not as it was before we asked.
+  const fresh = await snapshot();
+  if (fresh.open !== s.open || fresh.session !== s.session) return null; // the situation changed; re-plan on the next tick
+  Object.assign(s, fresh);
   let target = Math.min(Math.max(advice.targetLeverage, 1), p.maxLev); // guardrail: clamp whatever the model said
   // If the model's number would not move leverage in the planned direction, the policy value and its reason win.
   if ((p.action === "DeLever" && target >= s.leverage) || (p.action === "ReLever" && target <= s.leverage)) {
@@ -290,4 +294,6 @@ http.createServer(async (req, res) => {
 }).listen(PORT, () => {
   console.log(`VEIL risk agent ${account.address} on chain ${chainId}, http://localhost:${PORT}`);
   console.log(`LLM: ${LLM_MODEL} via opencode | gap-safe leverage ${r2(gapSafeLeverage())}x | weekday max ${POLICY.weekdayMaxLeverage}x`);
+  // First opencode run in a fresh environment is slow; do it now so the first real decision is not a timeout.
+  void advise({ warmup: true }, { min: 1, max: 1 }, { target: 1, why: "warm-up" }).then((a) => console.log(`LLM warm-up: ${a.source}${a.error ? ` (${a.error})` : ""}`));
 });
