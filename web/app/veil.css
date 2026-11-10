@@ -252,3 +252,16 @@ select.v-input { appearance: none; background-image: url("data:image/svg+xml,%3C
 .lp-chart text { font-family: var(--v-mono); font-size: 10px; fill: #8b9791; }
 @media (max-width: 860px) { .lp-links { display: none; } .lp-nav { grid-template-columns: 1fr auto; padding: 0 18px; } .lp-two, .lp-ledger, .lp-flowlist, .lp-real { grid-template-columns: 1fr; } .lp-ledger > div:first-child { border-right: 0; border-bottom: 1px solid var(--v-line-2); } .lp-section { padding: 64px 18px; } .lp-stage { margin: 44px 14px 0; } }
 @media (prefers-reduced-motion: reduce) { .lp *, .vd * { animation: none !important; transition: none !important; } }
+
+/* --------------------------------------------------------------------- deck */
+.dk { min-height: 100svh; background: #eef1ee; color: var(--v-ink); }
+.dk a { text-decoration: none; color: inherit; }
+.dk-top { position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 60px; padding: 0 28px; border-bottom: 1px solid var(--v-line); background: #ffffffeb; backdrop-filter: blur(10px); color: var(--v-mute); font-size: 13px; }
+.dk-top > :last-child { justify-self: end; }
+.dk-list { display: grid; gap: 34px; width: min(1280px, calc(100vw - 40px)); margin: 0 auto; padding: 34px 0 80px; }
+.dk-n { margin: 0 0 10px; color: var(--v-mute); font: 500 11px var(--v-mono); letter-spacing: .12em; text-transform: uppercase; }
+.dk-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid var(--v-line); border-radius: 14px; background: #fff; box-shadow: 0 10px 40px #1e3a2b14; }
+.dk-canvas { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+.dk-canvas h1, .dk-canvas h2, .dk-canvas h3, .dk-canvas p, .dk-canvas ul { margin: 0; }
+.dk-canvas ul { padding-left: 1.15em; list-style: disc; display: grid; gap: .35em; }
+.dk-canvas b { font-weight: 650; }

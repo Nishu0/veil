@@ -1,0 +1,43 @@
+<section id="built" data-transition="fade" style="background:#F7F9F6;color:#17301F;font-family:'Instrument Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:20px">
+<p style="font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#2B7850">What we built</p>
+<h2 style="font-family:'Instrument Serif', Georgia, serif;font-size:92px;font-weight:400;line-height:1.04;letter-spacing:-1px;color:#17301F">Live on Injective testnet</h2>
+</div>
+<div style="display:flex;gap:32px;align-items:stretch">
+<div style="width:500px;display:flex;flex-direction:column;gap:18px">
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;background:#17301F;padding:20px 32px;border-radius:20px">
+<p style="font-family:'Instrument Serif', Georgia, serif;font-size:60px;line-height:1.05;color:#7FD6A6">10 contracts</p>
+<p style="font-size:24px;line-height:1.35;color:#C3D9CB">deployed on Injective EVM testnet, with a ZK proof verified on-chain there</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;background:#FFFFFF;padding:20px 32px;border:1px solid #DDE4DF;border-radius:20px">
+<p style="font-family:'Instrument Serif', Georgia, serif;font-size:60px;line-height:1.05;color:#17301F">16 of 16</p>
+<p style="font-size:24px;line-height:1.35;color:#4A5851">contract tests pass, using real Groth16 proofs</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;background:#FFFFFF;padding:20px 32px;border:1px solid #DDE4DF;border-radius:20px">
+<p style="font-family:'Instrument Serif', Georgia, serif;font-size:60px;line-height:1.05;color:#17301F">5.99x → 3.31x</p>
+<p style="font-size:24px;line-height:1.35;color:#4A5851">leverage cut by the agent before the Friday close, in our local demo run</p>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:#FFFFFF;padding:40px;border:1px solid #DDE4DF;border-radius:20px">
+<h3 style="font-size:36px;font-weight:600;letter-spacing:-0.5px;color:#2B7850">Real</h3>
+<ul style="font-size:28px;line-height:1.4;color:#33423A">
+<li>ZK circuit, in-browser prover, on-chain verifier</li>
+<li>Compliance hook, vRWA token, vault and NAV</li>
+<li>Wallet-signed deposit, redeem and transfer</li>
+<li>Agent policy, LLM rationale, decision hashes</li>
+</ul>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:#FFFFFF;padding:40px;border:1px dashed #C9D3CC;border-radius:20px">
+<h3 style="font-size:36px;font-weight:600;letter-spacing:-0.5px;color:#8A6417">Mocked for now</h3>
+<ul style="font-size:28px;line-height:1.4;color:#33423A">
+<li>KYC issuer approves anyone</li>
+<li>USDT and the tokenized T-bill</li>
+<li>Price oracle, with the weekend freeze</li>
+<li>Exchange precompile: same interface, no orderbook</li>
+</ul>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1300px;font-size:24px;color:#7B8882">Veil · testnet chain 1439 · the full user flow has been run on a local chain</p>
+<p style="position:absolute;right:128px;bottom:64px;width:300px;font-size:24px;color:#7B8882;text-align:right">4 / 5</p>
+<aside>Be precise here. All ten contracts are deployed on Injective EVM testnet, and a zero-knowledge proof has been registered and verified on-chain there. The full flow (deposit, blocked transfer, agent hedging) has been run end to end on a local chain: the test suite passes with real proofs, and in that run the agent cut leverage from 5.99x to 3.31x before the simulated Friday close and its attempts to exceed its mandate were reverted. The right column is what stands in for Injective’s native modules until the ten days.</aside>
+</section>
