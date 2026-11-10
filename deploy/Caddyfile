@@ -1,0 +1,20 @@
+(veil) {
+	encode zstd gzip
+	# risk agent API, same origin as the site
+	handle_path /agent/* {
+		reverse_proxy agent:8787
+	}
+	handle {
+		reverse_proxy web:3000
+	}
+}
+
+# HTTPS is issued automatically once the domain's DNS points at this server.
+veilrwa.xyz, www.veilrwa.xyz {
+	import veil
+}
+
+# Plain HTTP on the server's IP, so the site is reachable before DNS is switched.
+:80 {
+	import veil
+}

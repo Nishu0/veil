@@ -1,0 +1,14 @@
+.git
+.env
+.env.*
+*.pem
+.logs
+**/node_modules
+**/.next
+contracts/out
+contracts/cache
+contracts/lib
+contracts/broadcast
+circuits/build
+circuits/node_modules
+agent/data
