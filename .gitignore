@@ -11,3 +11,5 @@ agent/data/
 *.log
 .DS_Store
 .logs/
+*.pem
+.env.*
