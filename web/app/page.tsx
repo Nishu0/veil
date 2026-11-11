@@ -1,15 +1,17 @@
 import Link from "next/link";
-import { ArrowRight, Bot, Check, EyeOff, FlaskConical, Landmark, ShieldCheck } from "lucide-react";
+import { ArrowRight, Check, FlaskConical } from "lucide-react";
 import { VeilMark } from "@/components/veil/ui";
-import { IsoScene } from "@/components/veil/iso-scene";
 import { GapGuardPanel, MandatePanel } from "@/components/veil/risk-panels";
+import { HeroTunnel } from "@/components/veil/hero-tunnel";
+import { HeroOrb } from "@/components/veil/hero-orb";
+import { LandingNav } from "@/components/veil/landing-nav";
 
 const Rule = () => <div className="lp-rule" aria-hidden />;
 
 export default function Landing() {
   return (
     <div className="lp">
-      <div className="lp-nav-wrap">
+      <LandingNav>
         <div className="lp-frame">
           <nav className="lp-nav">
             <Link href="/" className="lp-brand"><span><VeilMark size={17} /></span>Veil</Link>
@@ -20,30 +22,29 @@ export default function Landing() {
           </nav>
         </div>
         <Rule />
-      </div>
+      </LandingNav>
 
-      <div className="lp-frame">
-        <section className="lp-hero">
-          <span className="lp-badge"><i />Built on <b>Injective</b> · testnet demo</span>
-          <h1 className="lp-h1">Hold real-world assets.<br />Keep your name <em>off-chain.</em></h1>
-          <p className="lp-sub">A private, compliant prime account. Prove you are eligible with a zero-knowledge credential, then let a bounded AI agent hedge your book through the weekend.</p>
-          <div className="lp-cta">
-            <Link href="/dashboard" className="v-btn is-primary is-lg">Launch app<ArrowRight /></Link>
-            <a href="#how" className="v-btn is-lg">How it works</a>
+      <section className="hx">
+        <HeroTunnel />
+        <div className="hx-vignette" aria-hidden />
+        <div className="hx-grid">
+          <h1 className="hx-h1"><span>Prove you’re allowed.</span><span>Stay <em>private.</em></span></h1>
+          <div className="hx-orb" aria-hidden>
+<HeroOrb />
+            <span className="hx-disc"><VeilMark size={58} /></span>
           </div>
-        </section>
-        <div className="lp-stage">
-          <div className="lp-chips">
-            <span className="lp-chip"><ShieldCheck />Every transfer</span>checked against
-            <span className="lp-chip"><EyeOff />ZK credential</span>
-            <span className="lp-chip"><Landmark />Permissions hook</span>
-            <span className="lp-chip"><Bot />Agent mandate</span>
+          <div className="hx-copy">
+            <p>Veil is a private, compliant prime account for real-world assets on Injective. A zero-knowledge credential replaces the public KYC allowlist, and a bounded AI agent hedges your book through the weekend.</p>
+            <div className="hx-cta">
+              <Link href="/dashboard" className="v-btn is-primary is-lg">Launch app<ArrowRight /></Link>
+              <a href="#how" className="v-btn is-lg">See how it works</a>
+            </div>
           </div>
-          <IsoScene />
         </div>
-        <div style={{ height: 72 }} />
-      </div>
+        <span className="hx-foot"><i />Built on <b>Injective</b> · testnet demo</span>
+      </section>
       <Rule />
+
 
       <div className="lp-frame">
         <section className="lp-section">
