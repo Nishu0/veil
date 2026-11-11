@@ -87,6 +87,7 @@ export default function WalletPage() {
                 <Field label="Amount to deposit" hint={isPositiveAmount(dep) ? `You receive about ${fmtUsd(Number(dep) / sp)} vRWA at ${fmtSharePrice(sp)} USDT per share. 60% goes to T-bills, 30% to exchange margin, 10% stays idle.` : "Use the faucet for test USDT."}>
                   <Amount value={dep} onChange={setDep} unit="USDT" max={you?.usdt} />
                 </Field>
+                {you && isPositiveAmount(dep) && Number(dep) > you.usdt && <Note tone="warn" title="Not enough USDT">This wallet holds {fmtUsd(you.usdt)} USDT. Click <b>Faucet</b> on your wallet card for 10,000 test USDT.</Note>}
                 <Btn variant="primary" block pending={doDeposit.pending} disabled={!isPositiveAmount(dep)} onClick={() => doDeposit.run()}><ArrowDownToLine />Deposit</Btn>
                 <TxNote result={doDeposit.result} ok="Deposited. vRWA minted to your wallet." />
               </>

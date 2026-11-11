@@ -243,7 +243,9 @@ const ERRORS: Record<string, string> = {
   OracleFrozen: "The equity oracle is paused for the weekend, the mark price cannot update.",
   NotLiquidatable: "Position is healthy: equity is above maintenance margin, it cannot be liquidated.",
   InsufficientLiquidity: "The vault does not have enough liquid funds to pay this redemption right now.",
-  ERC20InsufficientBalance: "Insufficient token balance.",
+  ERC20InsufficientBalance: "Not enough tokens in this wallet for that amount. Use the faucet for test USDT.",
+  ERC20InsufficientAllowance: "The token allowance is too low. Try again to re-approve.",
+  InsufficientBalance: "Not enough free collateral in the vault subaccount.",
 };
 
 /** Turns a viem error into { name, message } where name is the Solidity custom error when there is one. */
@@ -267,9 +269,12 @@ async function write(w: DemoWallet, address: Address, abi: Abi, functionName: st
   const c = await getConfig();
   const p = await pub();
   const account = w.kind === "burner" ? privateKeyToAccount(w.privateKey!) : w.address;
-  // simulate first so reverts surface as decoded custom errors
+  // Simulate first so reverts surface as decoded custom errors. A call into the vault can revert
+  // inside the token or the exchange, so decode against every contract's errors, not just this ABI.
+  const known = new Set(abi.map((i) => (i.type === "error" ? i.name : "")));
+  const errors = Object.values(c.abis).flat().filter((i) => i.type === "error" && !known.has(i.name) && known.add(i.name));
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { request } = await p.simulateContract({ address, abi, functionName, args, account } as any);
+  const { request } = await p.simulateContract({ address, abi: [...abi, ...errors], functionName, args, account } as any);
   let hash: Hex;
   if (w.kind === "burner") {
     const wallet = createWalletClient({ chain: chainOf(c), transport: http(c.rpcUrl), account });
@@ -406,6 +411,8 @@ export async function deposit(w: DemoWallet, amount: string): Promise<TxResult> 
   const c = await getConfig();
   const p = await pub();
   const value = parseUnits(amount, 6);
+  const balance = (await p.readContract({ address: c.addresses.usdt, abi: c.abis.MockUSDT, functionName: "balanceOf", args: [w.address] })) as bigint;
+  if (balance < value) throw named("Not enough USDT", `This wallet holds ${formatUnits(balance, 6)} USDT and the deposit needs ${amount}. Click Faucet on your wallet card for 10,000 test USDT, then deposit again.`);
   const allowance = (await p.readContract({ address: c.addresses.usdt, abi: c.abis.MockUSDT, functionName: "allowance", args: [w.address, c.addresses.vault] })) as bigint;
   if (allowance < value) await write(w, c.addresses.usdt, c.abis.MockUSDT, "approve", [c.addresses.vault, 2n ** 256n - 1n]);
   return write(w, c.addresses.vault, c.abis.VeilVault, "deposit", [value]);
