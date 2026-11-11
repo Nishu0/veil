@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { BadgeCheck, EyeOff, Fingerprint, KeyRound, UserRound, Users } from "lucide-react";
-import { JURISDICTIONS, proveAndRegister, requestCredential, type Credential, type ProofResult, type WalletId } from "@/lib/veil/client";
+import { JURISDICTIONS, proveAndRegister, reconnectInjected, requestCredential, type Credential, type ProofResult, type WalletId } from "@/lib/veil/client";
 import { useVeil } from "@/components/veil/provider";
 import { fmtDate, truncate } from "@/components/veil/format";
 import { ConnectGate } from "@/components/veil/shell";
@@ -11,7 +11,7 @@ import { Btn, Card, Field, Hash, KV, Note, PageIntro, Pill, useAction } from "@/
 const country = (code: string) => JURISDICTIONS.find((j) => j.code === code)?.name ?? code;
 
 function CredentialFlow({ id, compact }: { id: WalletId; compact?: boolean }) {
-  const { wallets, credentials, state, reloadCredentials, withWallet } = useVeil();
+  const { wallets, credentials, state, reloadCredentials, withWallet, connect } = useVeil();
   const wallet = wallets?.[id] ?? null;
   const cred = credentials[id];
   const verified = !!state?.wallets[id]?.verified;
@@ -32,6 +32,7 @@ function CredentialFlow({ id, compact }: { id: WalletId; compact?: boolean }) {
     finally { setStage(null); }
   }, { success: "Proof verified on-chain", quietError: true });
 
+  const reconnect = useAction(async () => { await reconnectInjected(); await connect("injected"); }, { success: "Wallet reconnected. Try the proof again." });
   if (!wallet) return null;
   const showForm = !cred || editing;
 
@@ -71,6 +72,9 @@ function CredentialFlow({ id, compact }: { id: WalletId; compact?: boolean }) {
                 <Fingerprint />{stage === "proving" ? "Building proof in your browser…" : stage === "submitting" ? "Registering on-chain…" : "Generate ZK proof & register"}
               </Btn>
               {prove.result?.kind === "err" && <Note tone="err" title={prove.result.name ?? "Could not register the proof"}>{prove.result.message}</Note>}
+              {prove.result?.kind === "err" && wallet.kind === "injected" && /refused|authoris|authoriz/i.test(`${prove.result.name} ${prove.result.message}`) && (
+                <Btn block pending={reconnect.pending} onClick={() => reconnect.run()}>Reconnect wallet (re-approve this site)</Btn>
+              )}
               <Btn size="sm" onClick={() => { setEditing(true); prove.clear(); }}>Request a different credential</Btn>
             </>
           )}

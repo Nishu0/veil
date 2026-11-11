@@ -198,6 +198,17 @@ export async function connectInjected(): Promise<DemoWallet> {
   setInjectedAccount(accounts[0]);
   return getWallets().you!;
 }
+/**
+ * Drop this site's permission in the wallet and ask for it again. Fixes a wallet that lists the
+ * account as connected but still refuses to sign for it (stale permission from an earlier session).
+ */
+export async function reconnectInjected(): Promise<DemoWallet> {
+  const eth = injected();
+  if (!eth) throw new Error("No browser wallet found.");
+  await eth.request({ method: "wallet_revokePermissions", params: [{ eth_accounts: {} }] }).catch(() => undefined);
+  return connectInjected();
+}
+
 /** Record the wallet's active account (also used when the user switches accounts in the wallet). */
 export function setInjectedAccount(address: Address) {
   localStorage.setItem("veil.session", JSON.stringify({ kind: "injected", address: getAddress(address) }));
@@ -362,6 +373,12 @@ export async function proveAndRegister(w: DemoWallet, cred: Credential, onStage?
     secret: cred.secret, nameHash: cred.nameHash, kyc: cred.kyc, jurisdiction: cred.jurisdiction, accredited: cred.accredited,
     sigR8x: cred.sigR8x, sigR8y: cred.sigR8y, sigS: cred.sigS,
   };
+  // Registering costs gas; a brand-new wallet has none, so top it up from the faucet first.
+  const p = await pub();
+  if ((await p.getBalance({ address: w.address })) < 2_000_000_000_000_000n) {
+    await faucet(w.address).catch(() => undefined);
+    if ((await p.getBalance({ address: w.address })) === 0n) throw named("No gas", "This wallet has no INJ for gas and the faucet could not top it up. Get testnet INJ from https://testnet.faucet.injective.network, then try again.");
+  }
   onStage?.("proving");
   const t0 = performance.now();
   let proof;
