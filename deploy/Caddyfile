@@ -14,6 +14,12 @@ veilrwa.xyz, www.veilrwa.xyz {
 	import veil
 }
 
+# Analytics dashboard and tracking script (Umami).
+stats.veilrwa.xyz {
+	encode zstd gzip
+	reverse_proxy umami:3000
+}
+
 # Plain HTTP on the server's IP, so the site is reachable before DNS is switched.
 :80 {
 	import veil

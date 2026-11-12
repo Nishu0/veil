@@ -4,6 +4,7 @@ import * as React from "react";
 import { BadgeCheck, EyeOff, Fingerprint, KeyRound, UserRound, Users } from "lucide-react";
 import { JURISDICTIONS, proveAndRegister, reconnectInjected, requestCredential, type Credential, type ProofResult, type WalletId } from "@/lib/veil/client";
 import { useVeil } from "@/components/veil/provider";
+import { track } from "@/lib/veil/track";
 import { fmtDate, truncate } from "@/components/veil/format";
 import { ConnectGate } from "@/components/veil/shell";
 import { Btn, Card, Field, Hash, KV, Note, PageIntro, Pill, useAction } from "@/components/veil/ui";
@@ -25,10 +26,18 @@ function CredentialFlow({ id, compact }: { id: WalletId; compact?: boolean }) {
     const c = await requestCredential(id, { name: name.trim(), jurisdiction, accredited });
     reloadCredentials();
     setEditing(false);
+    track("credential-issued", { wallet: id });
     return c;
   }, { success: "Credential issued" });
   const prove = useAction(async (c: Credential): Promise<ProofResult> => {
-    try { return await withWallet(id, () => proveAndRegister(wallet!, c, setStage)); }
+    try {
+      const r = await withWallet(id, () => proveAndRegister(wallet!, c, setStage));
+      track("proof-registered", { wallet: id, seconds: Math.round(r.proveMs / 1000) });
+      return r;
+    } catch (e) {
+      track("proof-failed", { wallet: id });
+      throw e;
+    }
     finally { setStage(null); }
   }, { success: "Proof verified on-chain", quietError: true });
 

@@ -4,6 +4,7 @@ import * as React from "react";
 import { CalendarClock, Gauge, Skull, Sprout, TrendingUp } from "lucide-react";
 import { simulate } from "@/lib/veil/client";
 import { useVeil } from "@/components/veil/provider";
+import { track } from "@/lib/veil/track";
 import { SESSION_LABEL, fmtLev, fmtSignedUsd, fmtUsd } from "@/components/veil/format";
 import { Btn, Card, Field, KV, Note, PageIntro, Pill, useAction, type ActionResult } from "@/components/veil/ui";
 
@@ -17,8 +18,8 @@ export default function SimulatorPage() {
   const [gap, setGap] = React.useState("12");
   const [price, setPrice] = React.useState("");
   const q = { quietError: true } as const;
-  const session = useAction((v: 0 | 1 | 2) => simulate({ action: "session", value: v }), q);
-  const doGap = useAction(() => simulate({ action: "gap", pct: Number(gap) }), q);
+  const session = useAction((v: 0 | 1 | 2) => { track("sim-session", { session: v }); return simulate({ action: "session", value: v }); }, q);
+  const doGap = useAction(() => { track("sim-gap"); return simulate({ action: "gap", pct: Number(gap) }); }, q);
   const doPrice = useAction(() => simulate({ action: "price", value: price }), q);
   const doYield = useAction(() => simulate({ action: "yield", days: 30 }), q);
   const liq = useAction(() => simulate({ action: "liquidate" }), q);

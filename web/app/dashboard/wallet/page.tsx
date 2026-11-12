@@ -6,6 +6,7 @@ import { isAddress, type Address } from "viem";
 import { ArrowDownToLine, ArrowLeftRight, ArrowUpFromLine, Droplets, Send, Wallet } from "lucide-react";
 import { deposit, faucet, transfer, withdraw, type WalletId } from "@/lib/veil/client";
 import { useVeil } from "@/components/veil/provider";
+import { track } from "@/lib/veil/track";
 import { fmtSharePrice, fmtUsd, isPositiveAmount } from "@/components/veil/format";
 import { ConnectGate } from "@/components/veil/shell";
 import { Btn, Card, Field, Hash, Note, PageIntro, Pill, Seg, TxNote, useAction } from "@/components/veil/ui";
@@ -14,7 +15,7 @@ function WalletCard({ id, title }: { id: WalletId; title: string }) {
   const { wallets, state, credentials } = useVeil();
   const w = wallets?.[id];
   const s = state?.wallets[id];
-  const drip = useAction(async () => faucet(w!.address), { success: "10,000 test USDT sent" });
+  const drip = useAction(async () => { const r = await faucet(w!.address); track("faucet", { wallet: id }); return r; }, { success: "10,000 test USDT sent" });
   if (!w) return null;
   return (
     <Card title={title} icon={<Wallet />} right={<Pill tone={s?.verified ? "ok" : "warn"}>{s?.verified ? "verified" : "unverified"}</Pill>}>
@@ -61,10 +62,13 @@ export default function WalletPage() {
   const [amt, setAmt] = React.useState("100");
 
   const quiet = { quietError: true } as const;
-  const doDeposit = useAction(() => withWallet("you", () => deposit(account!, dep)), quiet);
-  const doRedeem = useAction(() => withWallet("you", () => withdraw(account!, red)), quiet);
+  const doDeposit = useAction(async () => { const r = await withWallet("you", () => deposit(account!, dep)); track("deposit"); return r; }, quiet);
+  const doRedeem = useAction(async () => { const r = await withWallet("you", () => withdraw(account!, red)); track("redeem"); return r; }, quiet);
   const recipient = (toFriend ? wallets?.friend.address : custom.trim()) as Address | undefined;
-  const doTransfer = useAction(() => withWallet("you", () => transfer(account!, token, recipient!, amt)), quiet);
+  const doTransfer = useAction(async () => {
+    try { const r = await withWallet("you", () => transfer(account!, token, recipient!, amt)); track("transfer", { token }); return r; }
+    catch (e) { track("transfer-blocked", { token }); throw e; }
+  }, quiet);
   const sp = state?.vault.sharePrice ?? 1;
 
   return (

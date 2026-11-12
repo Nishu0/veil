@@ -93,6 +93,8 @@ bash scripts/deploy-aws.sh     # HOST=ubuntu@<ip> KEY=<key.pem> to override
 
 The script installs Docker if needed, syncs the repo, writes the server's `.env` (the local one, switched to testnet), then builds and starts the stack. Caddy issues certificates for `veilrwa.xyz` and `www.veilrwa.xyz` once their DNS A records point at the server, and serves plain HTTP on the server's IP in the meantime. Ports 80 and 443 must be open in the security group.
 
+**Analytics.** A self-hosted [Umami](https://umami.is) (plus its Postgres) runs in the same stack and is served at `stats.veilrwa.xyz`: visitors, page views, referrers, countries, devices and custom events (wallet connected, proof registered, deposit, transfer blocked). It is cookie-free and records no wallet addresses or names. `UMAMI_DB_PASSWORD`, `UMAMI_APP_SECRET` and `UMAMI_WEBSITE_ID` live in `.env`. Change the default Umami login on first sign-in.
+
 On a public deployment the faucet is rationed (one gas top-up per wallet, a daily cap, a cooldown on USDT) because it spends the deployer's testnet INJ. The simulator and manual-desk controls are open to every visitor: they are demo controls signed by the vault-owner key on the server.
 
 ## How it works

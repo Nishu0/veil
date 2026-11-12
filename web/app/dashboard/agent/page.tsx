@@ -4,6 +4,7 @@ import * as React from "react";
 import { Bot, Cpu, Play, ScrollText, ShieldAlert } from "lucide-react";
 import { agentProbe, agentTick, verifyDecision, type AgentDecision } from "@/lib/veil/client";
 import { useVeil } from "@/components/veil/provider";
+import { track } from "@/lib/veil/track";
 import { SESSION_LABEL, fmtLev, fmtTime, truncate } from "@/components/veil/format";
 import { Btn, Card, Empty, Hash, KV, Note, PageIntro, Pill, useAction } from "@/components/veil/ui";
 
@@ -44,8 +45,8 @@ export default function AgentPage() {
   const { agent, state } = useVeil();
   const st = agent.status;
   const tick = useAction(() => agentTick(), { quietError: true });
-  const over = useAction(() => agentProbe("overlimit"), { quietError: true });
-  const wd = useAction(() => agentProbe("withdraw"), { quietError: true });
+  const over = useAction(() => { track("agent-probe", { kind: "overlimit" }); return agentProbe("overlimit"); }, { quietError: true });
+  const wd = useAction(() => { track("agent-probe", { kind: "withdraw" }); return agentProbe("withdraw"); }, { quietError: true });
   const offline = agent.online === false;
   const lastErr = [tick.result, over.result, wd.result].find((r) => r?.kind === "err");
 

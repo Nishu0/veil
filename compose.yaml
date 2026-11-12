@@ -15,10 +15,37 @@ services:
       - agent_data:/app/agent/data
     expose: ["8787"]
 
+  # Privacy-friendly analytics, served at stats.veilrwa.xyz
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    restart: unless-stopped
+    depends_on:
+      umami-db: { condition: service_healthy }
+    environment:
+      DATABASE_URL: postgresql://umami:${UMAMI_DB_PASSWORD}@umami-db:5432/umami
+      DATABASE_TYPE: postgresql
+      APP_SECRET: ${UMAMI_APP_SECRET}
+    expose: ["3000"]
+
+  umami-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: ${UMAMI_DB_PASSWORD}
+    volumes:
+      - umami_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U umami -d umami"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   caddy:
     image: caddy:2
     restart: unless-stopped
-    depends_on: [web, agent]
+    depends_on: [web, agent, umami]
     ports: ["80:80", "443:443", "443:443/udp"]
     volumes:
       - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
@@ -26,6 +53,7 @@ services:
       - caddy_config:/config
 
 volumes:
+  umami_db:
   agent_data:
   caddy_data:
   caddy_config:

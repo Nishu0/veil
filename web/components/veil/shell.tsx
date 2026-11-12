@@ -8,6 +8,7 @@ import { Bot, ChevronsUpDown, Fingerprint, FlaskConical, LayoutGrid, Landmark, L
 import { toast } from "sonner";
 import { chooseWallet, injected, listWallets, resetDemo } from "@/lib/veil/client";
 import { VeilProvider, useVeil } from "@/components/veil/provider";
+import { track } from "@/lib/veil/track";
 import { SESSION_LABEL, fmtPrice, truncate } from "@/components/veil/format";
 import { Btn, Note, Pill, VeilMark } from "@/components/veil/ui";
 
@@ -30,7 +31,7 @@ export function useConnect() {
   const [pending, setPending] = React.useState<"injected" | "demo" | null>(null);
   const go = async (kind: "injected" | "demo") => {
     setPending(kind);
-    try { await connect(kind); toast.success(kind === "injected" ? "Wallet connected" : "Demo wallet ready"); }
+    try { await connect(kind); track("wallet-connected", { kind }); toast.success(kind === "injected" ? "Wallet connected" : "Demo wallet ready"); }
     catch (e) { toast.error("Could not connect", { description: (e as Error).message }); }
     finally { setPending(null); }
   };

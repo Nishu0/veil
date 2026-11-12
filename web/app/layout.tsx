@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Instrument_Sans, Instrument_Serif } from "next/font/google";
+import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import "./veil.css";
@@ -20,6 +21,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         {children}
         <Toaster theme="light" position="bottom-right" closeButton />
+        {/* Self-hosted, cookie-free analytics. Only counts visits on the production domain. */}
+        <Script defer src="https://stats.veilrwa.xyz/script.js" data-website-id="3db86cbb-6ecf-48b0-956c-bdf2aec40693" data-domains="veilrwa.xyz,www.veilrwa.xyz" strategy="afterInteractive" />
       </body>
     </html>
   );
